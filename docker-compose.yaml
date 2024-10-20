@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  database:
+    image: postgres:16
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: demo
