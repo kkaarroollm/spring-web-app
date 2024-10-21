@@ -2,14 +2,16 @@ package com.test.demo.controller;
 
 import com.test.demo.model.User;
 import com.test.demo.service.auth.UserServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Controller
@@ -24,7 +26,17 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(@RequestParam(value = "error", required = false) String error, HttpServletRequest request, Model model) {
+        if (error == null) {
+            return "login";
+        }
+
+        String errorMessage = Optional.ofNullable(request.getSession(false))
+                .map(session -> (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION))
+                .map(AuthenticationException::getMessage)
+                .orElse("Unknown error");
+
+        model.addAttribute("errorMessage", errorMessage);
         return "login";
     }
 

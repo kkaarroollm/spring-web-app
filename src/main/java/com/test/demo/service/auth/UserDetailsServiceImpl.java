@@ -1,6 +1,8 @@
 package com.test.demo.service.auth;
 
 import com.test.demo.exceptions.EmailNotFoundException;
+import com.test.demo.exceptions.EmailNotVerifiedException;
+import com.test.demo.exceptions.UserDisabledException;
 import com.test.demo.model.User;
 import com.test.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException("User not found with email: " + email));
+
+        if (!user.isEnabled()) {
+            throw new UserDisabledException("User account is disabled. Contact us");
+        }
+
+        if (!user.isEmailVerified()) {
+            throw new EmailNotVerifiedException("Email waiting for verification");
+        }
 
         return new CustomUserDetails(user);
     }
