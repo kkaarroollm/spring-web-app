@@ -1,36 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spring Boot Tailwind</title>
-    <link rel="stylesheet" th:href="@{/main.css}">
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-<div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-    <h1 class="text-2xl font-bold mb-6 text-center">User Login</h1>
-    <form th:action="@{/login}" method="post" class="space-y-4">
-        <div th:if="${errorMessage}" class="text-red-500 text-sm text-center">
-            <p th:text="${errorMessage}"></p>
-        </div>
-        <div>
-            <label for="username" class="block text-sm font-medium text-gray-700">Email:</label>
-            <input type="email" id="username" name="username" required
-                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-        </div>
-        <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
-            <input type="password" id="password" name="password" required
-                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-        </div>
-        <div class="flex items-center justify-between">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-            <button type="submit"
-                    class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                Login
-            </button>
-        </div>
-    </form>
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbarFragment}"></nav>
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div th:replace="~{fragments/auth/loginForm :: loginForm}"></div>
 </div>
 </body>
 </html>

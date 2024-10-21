@@ -3,7 +3,6 @@ package com.test.demo.controller;
 import com.test.demo.model.User;
 import com.test.demo.service.auth.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
@@ -27,7 +26,12 @@ public class UserController {
 
     @GetMapping("/login")
     public String showLoginForm(@RequestParam(value = "error", required = false) String error, HttpServletRequest request, Model model) {
+        if (request.getUserPrincipal() != null) {
+            return "redirect:/";
+        }
+
         if (error == null) {
+            model.addAttribute("pageTitle", "Login");
             return "login";
         }
 
@@ -37,11 +41,15 @@ public class UserController {
                 .orElse("Unknown error");
 
         model.addAttribute("errorMessage", errorMessage);
+        model.addAttribute("pageTitle", "Login");
         return "login";
     }
 
     @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
+    public String showRegistrationForm(Model model, HttpServletRequest request) {
+        if (request.getUserPrincipal() != null) {
+            return "redirect:/";
+        }
         model.addAttribute("user", new User());
         return "register";
     }
