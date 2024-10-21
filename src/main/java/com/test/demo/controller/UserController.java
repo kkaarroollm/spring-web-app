@@ -62,13 +62,13 @@ public class UserController {
         return "login";
     }
 
-//    @RequestMapping("/default")
-//    public String defaultAfterLogin(HttpServletRequest request) {
-//        if (request.isUserInRole("ROLE_ADMIN")) {
-//            return "redirect:/admin";
-//        }
-//        return "redirect:/profile";
-//    }
+    @RequestMapping("/pre-home")
+    public String defaultAfterLogin(HttpServletRequest request) {
+        if (request.isUserInRole("ROLE_ADMIN")) {
+            return "redirect:/admin";
+        }
+        return "redirect:/";
+    }
 
 
     /* endpoint for email verification and handling this service */
