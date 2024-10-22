@@ -1,5 +1,6 @@
 package com.test.demo.service.auth;
 
+import com.test.demo.dto.UserDTO;
 import com.test.demo.model.Role;
 import com.test.demo.model.User;
 import com.test.demo.repository.RoleRepository;
@@ -14,9 +15,9 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<User> findUserByEmail(String email) {
@@ -24,19 +25,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role userRole = roleRepository.findByName("USER");
-        user.getRoles().add(userRole);
-        userRepository.save(user);
+    public void saveAdmin(User user) {
+        saveUserWithRole(user, "ADMIN");
     }
 
     @Override
-    public void saveAdmin(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role adminRole = roleRepository.findByName("ADMIN");
-        user.getRoles().add(adminRole);
-        userRepository.save(user);
+    public void saveUser(User user) {
+        saveUserWithRole(user, "USER");
     }
 
+    @Override
+    public void registerUser(UserDTO userDTO) {
+        User user = new User();
+        user.setEmail(userDTO.getEmail());
+        user.setFirstname(userDTO.getFirstname());
+        user.setLastname(userDTO.getLastname());
+        user.setPassword(userDTO.getPassword());
+        user.setPhone(userDTO.getPhone());
+        saveUserWithRole(user, "USER");
+    }
+
+    private void saveUserWithRole(User user, String roleName) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Role role = roleRepository.findByName(roleName);
+        user.getRoles().add(role);
+        userRepository.save(user);
+    }
 }

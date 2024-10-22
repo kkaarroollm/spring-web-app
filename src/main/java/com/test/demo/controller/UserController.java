@@ -1,13 +1,15 @@
 package com.test.demo.controller;
 
-import com.test.demo.model.User;
+import com.test.demo.dto.UserDTO;
 import com.test.demo.service.auth.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -50,16 +52,29 @@ public class UserController {
         if (request.getUserPrincipal() != null) {
             return "redirect:/";
         }
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserDTO());
         return "register";
     }
 
-
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user){
-        logger.info("User: " + user);
-        userService.saveUser(user);
-        return "login";
+    public String registerUser(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult, Model model) {
+        logger.info("UserDTO: " + userDTO);
+
+        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+            bindingResult.rejectValue("confirmPassword", "error.user", "Passwords do not match");
+        }
+
+        if (userService.findUserByEmail(userDTO.getEmail()).isPresent()) {
+            bindingResult.rejectValue("email", "error.user", "An account with this email already exists");
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "register";
+        }
+
+        userService.registerUser(userDTO);
+
+        return "redirect:/login";
     }
 
     @RequestMapping("/pre-home")
