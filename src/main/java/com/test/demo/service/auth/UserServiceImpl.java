@@ -5,9 +5,12 @@ import com.test.demo.model.Role;
 import com.test.demo.model.User;
 import com.test.demo.repository.RoleRepository;
 import com.test.demo.repository.UserRepository;
+import com.test.demo.service.email.implementations.VerificationEmail;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +21,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final VerificationEmail verificationEmail;
 
     @Override
     public Optional<User> findUserByEmail(String email) {
@@ -35,7 +39,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void registerUser(UserDTO userDTO) {
+    @Transactional
+    public void registerUser(UserDTO userDTO) throws MessagingException {
         User user = new User();
         user.setEmail(userDTO.getEmail());
         user.setFirstname(userDTO.getFirstname());
@@ -43,6 +48,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(userDTO.getPassword());
         user.setPhone(userDTO.getPhone());
         saveUserWithRole(user, "USER");
+        verificationEmail.sendEmail(user.getEmail());
+        /* TODO add sending token and add endpoint for verification and endpoint for sending activation email again */
     }
 
     private void saveUserWithRole(User user, String roleName) {

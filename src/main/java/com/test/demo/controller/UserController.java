@@ -72,8 +72,13 @@ public class UserController {
             return "register";
         }
 
-        userService.registerUser(userDTO);
-
+        try {
+            userService.registerUser(userDTO);
+        } catch (Exception e) {
+            logger.severe("Error occurred: " + e.getMessage());
+            model.addAttribute("errorMessage", e.getMessage());
+            return "register";
+        }
         return "redirect:/login";
     }
 

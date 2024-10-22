@@ -10,5 +10,5 @@ public interface UserService {
 
     void saveAdmin(User user);
     void saveUser(User user);
-    void registerUser(UserDTO userDTO);
+    void registerUser(UserDTO userDTO) throws Exception;
 }
