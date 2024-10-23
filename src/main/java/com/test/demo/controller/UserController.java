@@ -72,8 +72,13 @@ public class UserController {
             return "register";
         }
 
-        userService.registerUser(userDTO);
-
+        try {
+            userService.registerUser(userDTO);
+        } catch (Exception e) {
+            logger.severe("Error occurred: " + e.getMessage());
+            model.addAttribute("errorMessage", e.getMessage());
+            return "register";
+        }
         return "redirect:/login";
     }
 
@@ -85,6 +90,15 @@ public class UserController {
         return "redirect:/";
     }
 
+    @GetMapping("/verify-email")
+    public String verifyEmail(@RequestParam("token") String token, Model model) {
+        if (!userService.verifyUser(token)) {
+            model.addAttribute("errorMessage", "Invalid token");
+            return "redirect:/login";
+        }
+        model.addAttribute("errorMessage", "Email verified successfully");
+        /* handling messages with redirects is not the best practice, why? */
+        return "redirect:/login";
+    }
 
-    /* endpoint for email verification and handling this service */
 }
