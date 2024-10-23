@@ -1,4 +1,1 @@
-### Copy application-default.properties to application.properties
-```bash
-cp src/main/resources/application-default.properties src/main/resources/application.properties
-```
+### Spring web application, using Thymeleaf, Tailwind CSS, Flowbite, Spring Boot, PostgreSQL and Docker
