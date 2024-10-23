@@ -8,7 +8,6 @@ import com.test.demo.model.User;
 import com.test.demo.repository.RoleRepository;
 import com.test.demo.repository.UserRepository;
 import com.test.demo.service.email.EmailService;
-import com.test.demo.service.email.EmailServiceImpl;
 import com.test.demo.service.email.EmailStrategy;
 import com.test.demo.service.email.implementations.VerificationEmailStrategy;
 import com.test.demo.utils.VerificationToken;
@@ -27,8 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService = new EmailServiceImpl();
-
+    private final EmailService emailService;
     @Override
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);

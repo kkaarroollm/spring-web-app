@@ -2,6 +2,7 @@ package com.test.demo.service.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,13 +15,16 @@ import java.util.logging.Logger;
 
 @Service
 public class EmailServiceImpl implements EmailService {
-
     private final Logger logger = Logger.getLogger(EmailServiceImpl.class.getName());
 
     @Value("${spring.mail.username}")
     private String fromMail;
-    JavaMailSender mailSender;
-    TemplateEngine templateEngine;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
 
     @Override
